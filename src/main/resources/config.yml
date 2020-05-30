@@ -1,0 +1,17 @@
+in:
+  type: file
+  path_prefix: /tmp/test
+  decoders:
+    - type: unzip
+  parser:
+    charset: UTF-8
+    newline: CRLF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: ''
+    null_string: 'NULL'
+    header_line: false
+    columns:
+    - {name: col1, type: string}
+out: {type: stdout}
