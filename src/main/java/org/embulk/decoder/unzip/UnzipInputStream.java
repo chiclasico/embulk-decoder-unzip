@@ -3,26 +3,36 @@ package org.embulk.decoder.unzip;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveInputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 
 public class UnzipInputStream extends InputStream {
 
-	private ZipInputStream zis;
+	private InputStream is;
 	
 	public UnzipInputStream(InputStream is) {
-		zis = new ZipInputStream(new BufferedInputStream(is), StandardCharsets.UTF_8);
+		this.is = is;
 	}
 
 	@Override
 	public int read() throws IOException {
 
-		ZipEntry zipentry = zis.getNextEntry();
-		int v = -1;
-		if(zipentry != null)
-       		v = zis.read();
-		return v;
+		ArchiveInputStream in = null;
+		try {
+			in = new ArchiveStreamFactory().createArchiveInputStream(ArchiveStreamFactory.ZIP, is);
+		} catch (ArchiveException e) {
+			e.printStackTrace();
+		}
+		return in.read();
+
+//		ZipArchiveEntry entry = (ZipArchiveEntry)in.getNextEntry();
+//		entry.
+//		OutputStream out = Files.newOutputStream(dir.toPath().resolve(entry.getName()));
+//		IOUtils.copy(in, out);
+//		out.close();
+//		in.close();
 
 	}
 
