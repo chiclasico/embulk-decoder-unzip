@@ -12,23 +12,17 @@ import java.util.zip.ZipInputStream;
 
 public class UnzipInputStream extends InputStream {
 
-	private InputStream is;
-	private BufferedInputStream bis;
 	private ZipInputStream zis;
 	private String zipFileName;
 	
 	public UnzipInputStream(InputStream is, String zipFileName) {
 		this.zipFileName = zipFileName;
-   		this.is = is;
-   		this.bis = new BufferedInputStream(is);
-   		this.zis = new ZipInputStream(bis, StandardCharsets.UTF_8);
+   		this.zis = new ZipInputStream(new BufferedInputStream(is), StandardCharsets.UTF_8);
 	}
 
 	@Override
 	public void close() throws IOException {
 		zis.close();
-		bis.close();
-		is.close();
 	}
 	
 	@Override
@@ -46,15 +40,17 @@ public class UnzipInputStream extends InputStream {
 		if (zipEntry != null) {
 			System.out.println(String.format("Entry: %s len %d", zipEntry.getName(), zipEntry.getSize()));
 
-	        BufferedReader br = new BufferedReader(new InputStreamReader(zis, "UTF-8"));
-	        String line;
-	        while ((line = br.readLine()) != null) {
-	        	sb.append(line);
-	        	System.out.println(line);
-	        }
-	        br.close();
-	    } else 
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(zis, "UTF-8"));) {
+	        
+		        String line;
+		        while ((line = br.readLine()) != null) {
+		        	sb.append(line);
+		        	System.out.println(line);
+		        }
+			}
+	    } else {
 	    	return -1;
+	    }
 		
 		return new ByteArrayInputStream(sb.toString().getBytes("utf-8")).read();
 	}
