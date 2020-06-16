@@ -40,7 +40,8 @@ public class UnzipDecoderPlugin
     @Override
     public FileInput open(TaskSource taskSource, FileInput fileInput)
     {
-    	System.out.println("file: " + fileInput.hintOfCurrentInputFileNameForLogging());
+    	String zipFileName = fileInput.hintOfCurrentInputFileNameForLogging().get();
+    	System.out.println(zipFileName);
         final PluginTask task = taskSource.loadTask(PluginTask.class);
 
         final FileInputInputStream files = new FileInputInputStream(fileInput);
@@ -55,7 +56,7 @@ public class UnzipDecoderPlugin
 	                        if (!files.nextFile()) {
 	                            return null;
 	                        }
-	                        return newDecoderInputStream(task, files);
+	                        return newDecoderInputStream(task, files, zipFileName);
 	                    }
 	        
 	                    public void close() throws IOException
@@ -73,8 +74,8 @@ public class UnzipDecoderPlugin
         return isfi;
     }
 
-    private static InputStream newDecoderInputStream(PluginTask task, InputStream file) throws IOException
+    private static InputStream newDecoderInputStream(PluginTask task, InputStream file, String zipFileName) throws IOException
     {
-        return new UnzipInputStream(file);
+        return new UnzipInputStream(file, zipFileName);
     }
 }

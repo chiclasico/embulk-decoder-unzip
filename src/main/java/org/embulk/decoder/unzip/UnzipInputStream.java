@@ -15,8 +15,10 @@ public class UnzipInputStream extends InputStream {
 	private InputStream is;
 	private BufferedInputStream bis;
 	private ZipInputStream zis;
+	private String zipFileName;
 	
-	public UnzipInputStream(InputStream is) {
+	public UnzipInputStream(InputStream is, String zipFileName) {
+		this.zipFileName = zipFileName;
    		this.is = is;
    		this.bis = new BufferedInputStream(is);
    		this.zis = new ZipInputStream(bis, StandardCharsets.UTF_8);
@@ -36,7 +38,7 @@ public class UnzipInputStream extends InputStream {
 		try {
 			zipEntry = zis.getNextEntry();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("error: " + zipFileName + ", " + e.getMessage());
 			return -1;
 		}
 
