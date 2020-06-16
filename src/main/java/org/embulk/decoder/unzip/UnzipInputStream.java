@@ -30,8 +30,10 @@ public class UnzipInputStream extends InputStream {
 	public int read() throws IOException {
 		
 		int data = readStream();
-		if(data != -1)
+		if(data != -1) {
+			System.out.println("out: " + data);
 			return data;
+		}
 		
 		ZipEntry zipEntry = null;
 		try {
