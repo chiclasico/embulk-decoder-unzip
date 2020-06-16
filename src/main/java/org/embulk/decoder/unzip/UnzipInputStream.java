@@ -40,7 +40,7 @@ public class UnzipInputStream extends InputStream {
 				return -1;
 
 		} catch (IOException e1) {
-			System.err.println("error: " + zipFileName + ", " + e1.getMessage());
+//			System.err.println("error: " + zipFileName + ", " + e1.getMessage());
 			try {
 				zis.closeEntry();
 			} catch (IOException e2) {
@@ -60,6 +60,7 @@ public class UnzipInputStream extends InputStream {
 	        String line;
 	        while ((line = br.readLine()) != null) {
 	        	sb.append(line);
+	        	sb.append(System.lineSeparator());
 	        }
 			zis.closeEntry();
 		} catch(IOException e) {
