@@ -31,12 +31,16 @@ public class UnzipInputStream extends InputStream {
 	
 	@Override
 	public int read() throws IOException {
+		
+		ZipEntry zipEntry;
+		try {
+			zipEntry = zis.getNextEntry();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return -1;
+		}
 
-		ZipEntry zipEntry = null;
-		if(zis.available() != 0)
-			zis.getNextEntry();
 		StringBuilder sb = new StringBuilder();
-
 		if (zipEntry != null) {
 			System.out.println(String.format("Entry: %s len %d", zipEntry.getName(), zipEntry.getSize()));
 

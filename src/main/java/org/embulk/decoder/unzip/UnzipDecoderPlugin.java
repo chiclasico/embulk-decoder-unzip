@@ -40,6 +40,7 @@ public class UnzipDecoderPlugin
     @Override
     public FileInput open(TaskSource taskSource, FileInput fileInput)
     {
+    	System.out.println("file: " + fileInput.hintOfCurrentInputFileNameForLogging());
         final PluginTask task = taskSource.loadTask(PluginTask.class);
 
         final FileInputInputStream files = new FileInputInputStream(fileInput);
