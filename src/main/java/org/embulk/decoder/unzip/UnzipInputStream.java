@@ -40,17 +40,17 @@ public class UnzipInputStream extends InputStream {
 				return -1;
 
 		} catch (IOException e1) {
-			System.out.println("error: " + zipFileName + ", " + e1.getMessage());
+			System.err.println("error: " + zipFileName + ", " + e1.getMessage());
 			try {
 				zis.closeEntry();
-			} catch(IOException e2) {
+			} catch (IOException e2) {
 				if(e2.getMessage().equals("Stream closed"))
 					// 正常終了?
 					return -1;
 				else
 					throw new IOException(e2);
 			}
-			read();
+//			read();
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -60,7 +60,6 @@ public class UnzipInputStream extends InputStream {
 	        String line;
 	        while ((line = br.readLine()) != null) {
 	        	sb.append(line);
-	        	System.out.println(line);
 	        }
 			zis.closeEntry();
 		} catch(IOException e) {
