@@ -41,7 +41,7 @@ public class UnzipInputStream extends InputStream {
 
 		} catch (IOException e) {
 			System.out.println("error: " + zipFileName + ", " + e.getMessage());
-			zis.closeEntry();
+//			zis.closeEntry();
 			read();
 		}
 
