@@ -48,7 +48,9 @@ public class UnzipInputStream extends InputStream {
 		        	System.out.println(line);
 		        }
 			}
-	    	zis.closeEntry();
+
+			if(zis.available() != 0)
+				zis.closeEntry();
 
 		} else {
 	    	return -1;
