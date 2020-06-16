@@ -32,7 +32,9 @@ public class UnzipInputStream extends InputStream {
 	@Override
 	public int read() throws IOException {
 
-		ZipEntry zipEntry = zis.getNextEntry();
+		ZipEntry zipEntry = null;
+		if(zis.available() != 0)
+			zis.getNextEntry();
 		StringBuilder sb = new StringBuilder();
 
 		if (zipEntry != null) {
