@@ -57,7 +57,7 @@ public class UnzipInputStream extends InputStream {
 		        	System.out.println(line);
 		        }
 			}
-			zis.closeEntry();
+//			zis.closeEntry();
 			this.tmpStream = new ByteArrayInputStream(sb.toString().getBytes("utf-8"));
 			read();
 		}
