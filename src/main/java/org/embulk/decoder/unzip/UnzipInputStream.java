@@ -14,6 +14,7 @@ public class UnzipInputStream extends InputStream {
 
 	private ZipInputStream zis;
 	private String zipFileName;
+	private ByteArrayInputStream tmpStream;
 	
 	public UnzipInputStream(InputStream is, String zipFileName) {
 		this.zipFileName = zipFileName;
@@ -28,12 +29,20 @@ public class UnzipInputStream extends InputStream {
 	@Override
 	public int read() throws IOException {
 		
-		ZipEntry zipEntry;
+		int data = readStream();
+		if(data != -1)
+			return data;
+		
+		ZipEntry zipEntry = null;
 		try {
 			zipEntry = zis.getNextEntry();
+			if(zipEntry == null)
+				return -1;
+
 		} catch (IOException e) {
 			System.out.println("error: " + zipFileName + ", " + e.getMessage());
-			return -1;
+			zis.closeEntry();
+			read();
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -48,15 +57,23 @@ public class UnzipInputStream extends InputStream {
 		        	System.out.println(line);
 		        }
 			}
-
-			if(zis.available() != 0)
-				zis.closeEntry();
-
-		} else {
-	    	return -1;
-	    }
+			zis.closeEntry();
+			this.tmpStream = new ByteArrayInputStream(sb.toString().getBytes("utf-8"));
+			read();
+		}
 		
-		return new ByteArrayInputStream(sb.toString().getBytes("utf-8")).read();
+		return -1;
+	}
+
+	private int readStream() {
+
+		if(tmpStream != null) {
+			int data = tmpStream.read();
+			while(data != -1)
+			  return tmpStream.read();
+		}
+
+		return -1;
 	}
 	
 }
