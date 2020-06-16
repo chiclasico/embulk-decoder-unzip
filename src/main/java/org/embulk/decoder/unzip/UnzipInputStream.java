@@ -39,34 +39,40 @@ public class UnzipInputStream extends InputStream {
 			if(zipEntry == null)
 				return -1;
 
-		} catch (IOException e) {
-			System.out.println("error: " + zipFileName + ", " + e.getMessage());
-//			zis.closeEntry();
+		} catch (IOException e1) {
+			System.out.println("error: " + zipFileName + ", " + e1.getMessage());
+			try {
+				zis.closeEntry();
+			} catch(IOException e2) {
+				if(e2.getMessage().equals("Stream closed"))
+					// 正常終了?
+					return -1;
+				else
+					throw new IOException(e2);
+			}
 			read();
 		}
 
 		StringBuilder sb = new StringBuilder();
-		if (zipEntry != null) {
-			System.out.println(String.format("Entry: %s len %d", zipEntry.getName(), zipEntry.getSize()));
+		System.out.println(String.format("Entry: %s len %d", zipEntry.getName(), zipEntry.getSize()));
 
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(zis, "UTF-8"));) {
-		        String line;
-		        while ((line = br.readLine()) != null) {
-		        	sb.append(line);
-		        	System.out.println(line);
-		        }
-				zis.closeEntry();
-			} catch(IOException e) {
-				if(e.getMessage().equals("Stream closed"))
-					// 正常終了?
-					return -1;
-				else
-					throw new IOException(e);
-			}
-
-			this.tmpStream = new ByteArrayInputStream(sb.toString().getBytes("utf-8"));
-			read();
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(zis, "UTF-8"));) {
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	        	sb.append(line);
+	        	System.out.println(line);
+	        }
+			zis.closeEntry();
+		} catch(IOException e) {
+			if(e.getMessage().equals("Stream closed"))
+				// 正常終了?
+				return -1;
+			else
+				throw new IOException(e);
 		}
+
+		this.tmpStream = new ByteArrayInputStream(sb.toString().getBytes("utf-8"));
+		read();
 		
 		return -1;
 	}
