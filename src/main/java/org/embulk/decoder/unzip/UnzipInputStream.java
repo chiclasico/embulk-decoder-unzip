@@ -50,14 +50,20 @@ public class UnzipInputStream extends InputStream {
 			System.out.println(String.format("Entry: %s len %d", zipEntry.getName(), zipEntry.getSize()));
 
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(zis, "UTF-8"));) {
-	        
 		        String line;
 		        while ((line = br.readLine()) != null) {
 		        	sb.append(line);
 		        	System.out.println(line);
 		        }
+				zis.closeEntry();
+			} catch(IOException e) {
+				if(e.getMessage().equals("Stream closed"))
+					// 正常終了?
+					return -1;
+				else
+					throw new IOException(e);
 			}
-//			zis.closeEntry();
+
 			this.tmpStream = new ByteArrayInputStream(sb.toString().getBytes("utf-8"));
 			read();
 		}
