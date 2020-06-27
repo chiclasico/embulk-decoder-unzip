@@ -29,9 +29,9 @@ public class UnzipDecoderPlugin
         @ConfigDefault("\"\"")
         public String getMatchName();
 
-        @Config("skip_on_error")
-        @ConfigDefault("true")
-        public boolean skipOnError();
+//        @Config("skip_on_error")
+//        @ConfigDefault("true")
+//        public boolean skipOnError();
 
         @ConfigInject
         public BufferAllocator getBufferAllocator();
