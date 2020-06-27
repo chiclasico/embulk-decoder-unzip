@@ -1,8 +1,5 @@
 package org.embulk.decoder.unzip;
 
-import java.io.InputStream;
-import java.io.IOException;
-
 import org.embulk.config.Config;
 import org.embulk.config.ConfigDefault;
 import org.embulk.config.ConfigInject;
@@ -13,7 +10,6 @@ import org.embulk.spi.BufferAllocator;
 import org.embulk.spi.DecoderPlugin;
 import org.embulk.spi.FileInput;
 import org.embulk.spi.util.FileInputInputStream;
-import org.embulk.spi.util.InputStreamFileInput;
 
 public class UnzipDecoderPlugin
         implements DecoderPlugin
@@ -21,9 +17,21 @@ public class UnzipDecoderPlugin
     public interface PluginTask
             extends Task
     {
-//        @Config("skip_on_error")
-//        @ConfigDefault("true")
-//        public boolean skipOnError();
+        @Config("format")
+        @ConfigDefault("\"\"")
+        public String getFormat();
+
+        @Config("decompress_concatenated")
+        @ConfigDefault("true")
+        public boolean getDecompressConcatenated();
+
+        @Config("match_name")
+        @ConfigDefault("\"\"")
+        public String getMatchName();
+
+        @Config("skip_on_error")
+        @ConfigDefault("true")
+        public boolean skipOnError();
 
         @ConfigInject
         public BufferAllocator getBufferAllocator();
@@ -45,37 +53,8 @@ public class UnzipDecoderPlugin
         final PluginTask task = taskSource.loadTask(PluginTask.class);
 
         final FileInputInputStream files = new FileInputInputStream(fileInput);
-
-        InputStreamFileInput isfi = null;
-        try {
-	        isfi = new InputStreamFileInput(
-	                task.getBufferAllocator(),
-	                new InputStreamFileInput.Provider() {
-	                    public InputStream openNext() throws IOException
-	                    {
-	                        if (!files.nextFile()) {
-	                            return null;
-	                        }
-	                        return newDecoderInputStream(task, files, zipFileName);
-	                    }
-	        
-	                    public void close() throws IOException
-	                    {
-	                        files.close();
-	                    }
-	                });
-        } catch (Exception e) {
-//        	if(task.skipOnError()) {
-//        		System.out.println("skip: " + isfi.hintOfCurrentInputFileNameForLogging());
-//        		return null;
-//        	} else
-       		throw new RuntimeException(e);
-        }
-        return isfi;
+        return new CommonsCompressFileInput(task.getBufferAllocator(),
+                new CommonsCompressProvider(task, files));
     }
 
-    private static InputStream newDecoderInputStream(PluginTask task, InputStream file, String zipFileName) throws IOException
-    {
-        return new UnzipInputStream(file, zipFileName);
-    }
 }
