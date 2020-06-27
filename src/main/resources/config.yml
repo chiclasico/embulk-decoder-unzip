@@ -3,6 +3,7 @@ in:
   path_prefix: /tmp/test
   decoders:
     - type: unzip
+      format: zip
   parser:
     charset: UTF-8
     newline: CRLF
