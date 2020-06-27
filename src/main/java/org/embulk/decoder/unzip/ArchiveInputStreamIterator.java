@@ -64,10 +64,10 @@ class ArchiveInputStreamIterator implements Iterator<InputStream> {
             try {
             	entry = ain.getNextEntry();
             } catch (ZipException ze) {
-            	System.err.println(ze.getMessage());
+            	System.err.println("ZipException: " + ze.getMessage());
             	continue;
             } catch (IllegalArgumentException ie) {
-            	System.err.println(ie.getMessage());
+            	System.err.println("IllegalArgumentException: " + ie.getMessage());
             	continue;
             }
             if (entry == null) {
