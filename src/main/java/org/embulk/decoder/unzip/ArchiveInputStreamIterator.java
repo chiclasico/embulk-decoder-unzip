@@ -3,6 +3,7 @@ package org.embulk.decoder.unzip;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.zip.ZipException;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -60,7 +61,12 @@ class ArchiveInputStreamIterator implements Iterator<InputStream> {
         }
 
         while (true) {
-            entry = ain.getNextEntry();
+            try {
+            	entry = ain.getNextEntry();
+            } catch (ZipException e) {
+            	System.err.println(e.getMessage());
+            	continue;
+            }
             if (entry == null) {
                 endOfArchive = true;
                 return false;
