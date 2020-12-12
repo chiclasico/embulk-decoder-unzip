@@ -1,5 +1,6 @@
 package org.embulk.decoder.unzip;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -68,6 +69,9 @@ class ArchiveInputStreamIterator implements Iterator<InputStream> {
             	continue;
             } catch (IllegalArgumentException ie) {
             	System.err.println("IllegalArgumentException: " + ie.getMessage());
+            	continue;
+            } catch (EOFException eof) {
+            	System.err.println("EOFException: " + eof.getMessage());
             	continue;
             }
             if (entry == null) {
